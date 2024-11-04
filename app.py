@@ -43,61 +43,64 @@ def set_background(image_path):
 # Set background image
 set_background("Bg4.png")
 
-# Front page login
-st.markdown('<div class="title-container"><h1>WELCOME TO PROJECT TRAPMOS</h1></div>', unsafe_allow_html=True)
+# Initialize session state for login
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
 
-# Ask for username and password
-username = st.text_input("Username")
-password = st.text_input("Password", type="password")
+# Login form
+if not st.session_state['logged_in']:
+    st.markdown('<div class="title-container"><h1>WELCOME TO PROJECT TRAPMOS</h1></div>', unsafe_allow_html=True)
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
 
-# Define correct credentials
-correct_username = "admin"
-correct_password = "admin"
+    # Define correct credentials
+    correct_username = "admin"
+    correct_password = "admin"
 
-# Check login credentials
-if st.button("Login"):
-    if username == correct_username and password == correct_password:
-        st.success("Login successful!")
-        
-        # Main page content
-        st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
-        st.write("Upload an image to make a prediction.")
+    if st.button("Login"):
+        if username == correct_username and password == correct_password:
+            st.session_state['logged_in'] = True
+            st.success("Login successful!")
+        else:
+            st.error("Incorrect username or password.")
 
-        # Load the model
-        model_path = "best.onnx"
-        ort_session = ort.InferenceSession(model_path)
-        
-        # Define class names
-        class_names = {
-            0: "Aedes Aegypti",
-            1: "Aedes Albopictus",
-        }
+# Main app content, shown after login
+if st.session_state['logged_in']:
+    st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
+    st.write("Upload an image to make a prediction.")
 
-        # File uploader
-        uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
+    # Load the model
+    model_path = "best.onnx"
+    ort_session = ort.InferenceSession(model_path)
+    
+    # Define class names
+    class_names = {
+        0: "Aedes Albopictus",
+        1: "Aedes Aegypti",
+    }
 
-        # Process and display predictions
-        if uploaded_file is not None:
-            uploaded_image = Image.open(uploaded_file)
-            st.image(uploaded_image, caption="Uploaded Image.", use_column_width=True)
+    # File uploader
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
 
-            resized_image = uploaded_image.resize((640, 640))
-            image_input = np.array(resized_image).astype(np.float32) / 255.0
-            image_input = np.transpose(image_input, (2, 0, 1))
-            image_input = image_input[np.newaxis, :, :, :]
+    # Process and display predictions if an image is uploaded
+    if uploaded_file is not None:
+        uploaded_image = Image.open(uploaded_file)
+        st.image(uploaded_image, caption="Uploaded Image.", use_column_width=True)
 
-            outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
-            detections = outputs[0]
+        resized_image = uploaded_image.resize((640, 640))
+        image_input = np.array(resized_image).astype(np.float32) / 255.0
+        image_input = np.transpose(image_input, (2, 0, 1))
+        image_input = image_input[np.newaxis, :, :, :]
 
-            draw = ImageDraw.Draw(resized_image)
-            for detection in detections[0]:
-                x1, y1, x2, y2, confidence, class_id = detection
-                if confidence > 0.3:
-                    class_name = class_names.get(int(class_id), "Unknown")
-                    draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
-                    draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
+        outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
+        detections = outputs[0]
 
-            st.image(resized_image, caption="Model Prediction", use_column_width=True)
+        draw = ImageDraw.Draw(resized_image)
+        for detection in detections[0]:
+            x1, y1, x2, y2, confidence, class_id = detection
+            if confidence > 0.3:
+                class_name = class_names.get(int(class_id), "Unknown")
+                draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
+                draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
-    else:
-        st.error("Incorrect username or password.")
+        st.image(resized_image, caption="Model Prediction", use_column_width=True)
