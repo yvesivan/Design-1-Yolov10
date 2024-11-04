@@ -69,8 +69,8 @@ if st.button("Login"):
         
         # Define class names
         class_names = {
-            0: "Aedes Albopictus",
-            1: "Aedes Aegypti",
+            0: "Aedes Aegypti",
+            1: "Aedes Albopictus",
         }
 
         # File uploader
