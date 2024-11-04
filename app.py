@@ -20,8 +20,9 @@ if uploaded_file is not None:
     image_input = cv2.resize(image_np, (640, 640))
     image_input = np.transpose(image_input, (2, 0, 1))
     image_input = image_input[np.newaxis, :, :, :].astype(np.float32)
+    image_input /= 255.0
 
-    outputs = ort_session.run(None, {"input": image_input})
+    outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
     detections = outputs[0]
 
     for detection in detections[0]:
