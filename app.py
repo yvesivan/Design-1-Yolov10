@@ -1,8 +1,7 @@
 import streamlit as st
 import onnxruntime as ort
 import numpy as np
-from PIL import Image
-import cv2
+from PIL import Image, ImageDraw, ImageFont
 import base64
 
 # Load and encode the background image to display it in the CSS
@@ -63,23 +62,22 @@ if uploaded_file is not None:
 
     # Convert to numpy array and pre-process for model
     image_np = np.array(uploaded_image)
-    image_input = cv2.resize(image_np, (640, 640))
+    image_input = uploaded_image.resize((640, 640))
+    image_input = np.array(image_input).astype(np.float32) / 255.0
     image_input = np.transpose(image_input, (2, 0, 1))
-    image_input = image_input[np.newaxis, :, :, :].astype(np.float32)
-    image_input /= 255.0
+    image_input = image_input[np.newaxis, :, :, :]
 
     # Run model inference
     outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
     detections = outputs[0]
 
     # Draw boxes for each detection
+    draw = ImageDraw.Draw(uploaded_image)
     for detection in detections[0]:
         x1, y1, x2, y2, confidence, class_id = detection
         if confidence > 0.3:
-            cv2.rectangle(image_np, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            cv2.putText(image_np, f"Class: {int(class_id)}, Conf: {confidence:.2f}",
-                        (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+            draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
+            draw.text((x1, y1 - 10), f"Class: {int(class_id)}, Conf: {confidence:.2f}", fill="red")
 
     # Display result image with bounding boxes
-    result_image = Image.fromarray(image_np)
-    st.image(result_image, caption="Model Prediction", use_column_width=True)
+    st.image(uploaded_image, caption="Model Prediction", use_column_width=True)
