@@ -1,7 +1,7 @@
 import streamlit as st
 import onnxruntime as ort
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import base64
 
 # Load and encode the background image to display it in the CSS
@@ -60,10 +60,9 @@ if uploaded_file is not None:
     uploaded_image = Image.open(uploaded_file)
     st.image(uploaded_image, caption="Uploaded Image.", use_column_width=True)
 
-    # Convert to numpy array and pre-process for model
-    image_np = np.array(uploaded_image)
-    image_input = uploaded_image.resize((640, 640))
-    image_input = np.array(image_input).astype(np.float32) / 255.0
+    # Resize and prepare the image for the model
+    resized_image = uploaded_image.resize((640, 640))
+    image_input = np.array(resized_image).astype(np.float32) / 255.0
     image_input = np.transpose(image_input, (2, 0, 1))
     image_input = image_input[np.newaxis, :, :, :]
 
@@ -71,8 +70,8 @@ if uploaded_file is not None:
     outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
     detections = outputs[0]
 
-    # Draw boxes for each detection
-    draw = ImageDraw.Draw(uploaded_image)
+    # Draw boxes for each detection on the resized image
+    draw = ImageDraw.Draw(resized_image)
     for detection in detections[0]:
         x1, y1, x2, y2, confidence, class_id = detection
         if confidence > 0.3:
@@ -80,4 +79,4 @@ if uploaded_file is not None:
             draw.text((x1, y1 - 10), f"Class: {int(class_id)}, Conf: {confidence:.2f}", fill="red")
 
     # Display result image with bounding boxes
-    st.image(uploaded_image, caption="Model Prediction", use_column_width=True)
+    st.image(resized_image, caption="Model Prediction", use_column_width=True)
