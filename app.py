@@ -20,11 +20,12 @@ def set_background(image_path):
         background-image: url("data:image/png;base64,{bg_img_base64}");
         background-size: cover;
     }}
-    .text-container {{
+    .title-container {{
         border: 2px solid rgba(0, 0, 0, 0.5);
-        padding: 20px;
+        padding: 10px 20px;
         border-radius: 10px;
         background-color: rgba(255, 255, 255, 0.7);
+        display: inline-block;
     }}
     .stButton > button {{
         background-color: #B46617;
@@ -48,11 +49,9 @@ set_background("Bg4.png")
 model_path = "best.onnx"
 ort_session = ort.InferenceSession(model_path)
 
-# Title and description with styled container
-st.markdown('<div class="text-container">', unsafe_allow_html=True)
-st.title("Aedes Mosquito Identifier")
+# Title with semi-transparent border
+st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
 st.write("Upload an image to make a prediction.")
-st.markdown('</div>', unsafe_allow_html=True)
 
 # File uploader
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
