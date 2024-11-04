@@ -10,7 +10,7 @@ ort_session = ort.InferenceSession(model_path)
 st.title("Aedes Mosquito Identifier with YOLO")
 st.write("Upload an image to make a prediction.")
 
-uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
 
 if uploaded_file is not None:
     uploaded_image = Image.open(uploaded_file)
