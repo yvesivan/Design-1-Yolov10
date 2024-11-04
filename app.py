@@ -3,7 +3,7 @@ import onnxruntime as ort
 import numpy as np
 from PIL import Image
 
-model_path = "path/to/your/model/best.onnx"
+model_path = "best.onnx"
 ort_session = ort.InferenceSession(model_path)
 
 def preprocess_image(image):
