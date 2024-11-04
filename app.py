@@ -20,11 +20,11 @@ def set_background(image_path):
         background-size: cover;
     }}
     .title-container {{
-        border: 2px solid rgba(0, 0, 0, 0.5);
         padding: 10px 20px;
-        border-radius: 10px;
-        background-color: rgba(255, 255, 255, 0.7);
+        background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
         display: inline-block;
+        text-align: center;
+        margin-bottom: 20px;
     }}
     .stButton > button {{
         background-color: #B46617;
@@ -43,6 +43,10 @@ def set_background(image_path):
 
 # Set background image
 set_background("Bg4.png")
+
+# Display logo at the top
+logo = Image.open("1.png")
+st.image(logo, use_column_width=False, width=100)  # Adjust width as needed
 
 # Initialize session state for login
 if 'logged_in' not in st.session_state:
@@ -67,7 +71,6 @@ if not st.session_state['logged_in']:
 
 # Show main app content if logged in
 if st.session_state['logged_in']:
-    # Display the title and a logout button
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
 
