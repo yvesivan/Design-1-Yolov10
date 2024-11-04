@@ -47,7 +47,7 @@ set_background("Bg4.png")
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
-# Login form if not logged in
+# Show login form only if not logged in
 if not st.session_state['logged_in']:
     st.markdown('<div class="title-container"><h1>WELCOME TO PROJECT TRAPMOS</h1></div>', unsafe_allow_html=True)
     username = st.text_input("Username")
@@ -64,14 +64,14 @@ if not st.session_state['logged_in']:
         else:
             st.error("Incorrect username or password.")
 
-# Main app content, shown after login
+# Show main app content if logged in
 if st.session_state['logged_in']:
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
 
     # Logout button
     if st.button("Logout"):
-        st.session_state['logged_in'] = False
+        st.session_state['logged_in'] = False  # Reset login state to show login form again
 
     # Load the model
     model_path = "best.onnx"
