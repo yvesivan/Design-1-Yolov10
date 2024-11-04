@@ -29,7 +29,7 @@ def set_background(image_path):
     }}
     .stButton > button {{
         background-color: #B46617;
-        color: #B46617;
+        color: white;
         border: none;
         border-radius: 8px;
         padding: 0.5em 1em;
