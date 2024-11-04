@@ -48,8 +48,8 @@ st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></di
 st.write("Upload an image to make a prediction.")
 
 class_names = {
-    0: "Aedes Aegypti",
-    1: "Aedes Albopictus",
+    0: "Aedes Albopictus",
+    1: "Aedes Aegypti",
 }
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
