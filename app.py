@@ -46,7 +46,7 @@ set_background("Bg4.png")
 
 # Display large logo at the top
 logo = Image.open("1.png")
-st.image(logo, use_column_width=False, width=900)  # Adjust width to make the logo bigger
+st.image(logo, use_column_width=False, width=750)  # Adjust width to make the logo bigger
 
 # Initialize session state for login
 if 'logged_in' not in st.session_state:
