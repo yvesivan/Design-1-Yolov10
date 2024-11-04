@@ -4,12 +4,13 @@ import numpy as np
 from PIL import Image, ImageDraw
 import base64
 
-# Set background image
+# Function to get base64 encoding of an image
 def get_base64_image(image_path):
     with open(image_path, "rb") as image_file:
         base64_str = base64.b64encode(image_file.read()).decode()
     return base64_str
 
+# Function to set background image in Streamlit
 def set_background(image_path):
     bg_img_base64 = get_base64_image(image_path)
     bg_css = f"""
@@ -66,6 +67,7 @@ if not st.session_state['logged_in']:
 
 # Show main app content if logged in
 if st.session_state['logged_in']:
+    # Display the title and a logout button
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
 
