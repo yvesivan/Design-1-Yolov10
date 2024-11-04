@@ -7,7 +7,7 @@ import cv2
 model_path = "best.onnx"
 ort_session = ort.InferenceSession(model_path)
 
-st.title("Object Detection with YOLO")
+st.title("Aedes Mosquito Identifier with YOLO")
 st.write("Upload an image to make a prediction.")
 
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
