@@ -25,9 +25,13 @@ if uploaded_file is not None:
     outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
     detections = outputs[0]
 
+    print("Detections shape:", detections.shape)
+    print("Detections data:", detections)
+
     for detection in detections[0]:
+        print(detection)
         x1, y1, x2, y2, confidence, class_id = detection
-        if confidence > 0.5:
+        if confidence > 0.3:
             cv2.rectangle(image_np, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
             cv2.putText(image_np, f"Class: {int(class_id)}, Conf: {confidence:.2f}",
                         (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
