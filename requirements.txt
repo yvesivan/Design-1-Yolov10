@@ -1,4 +1,5 @@
 streamlit
 onnxruntime
 numpy
-Pillow
+opencv-python
+pillow
