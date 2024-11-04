@@ -11,7 +11,7 @@ def get_base64_image(image_path):
         base64_str = base64.b64encode(image_file.read()).decode()
     return base64_str
 
-# Set background
+# Set background and custom styles
 def set_background(image_path):
     bg_img_base64 = get_base64_image(image_path)
     bg_css = f"""
@@ -20,20 +20,39 @@ def set_background(image_path):
         background-image: url("data:image/png;base64,{bg_img_base64}");
         background-size: cover;
     }}
+    .text-container {{
+        border: 2px solid rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+    }}
+    .stButton > button {{
+        background-color: #B46617;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5em 1em;
+        font-size: 1rem;
+    }}
+    .stButton > button:hover {{
+        background-color: #D47F23;
+    }}
     </style>
     """
     st.markdown(bg_css, unsafe_allow_html=True)
 
-# Set the background image
+# Set the background image and custom styles
 set_background("Bg4.png")
 
 # Model setup
 model_path = "best.onnx"
 ort_session = ort.InferenceSession(model_path)
 
-# Title and description
+# Title and description with styled container
+st.markdown('<div class="text-container">', unsafe_allow_html=True)
 st.title("Aedes Mosquito Identifier")
 st.write("Upload an image to make a prediction.")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # File uploader
 uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
