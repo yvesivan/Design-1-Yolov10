@@ -14,7 +14,7 @@ def get_base64_image(image_path):
 # Function to set background image in Streamlit
 def set_background():
     # Correct path based on 'Backgrounds' folder alignment with 'app.py'
-    bg_image_path = Path(__file__).parent / "Backgrounds" / "bg2.png"
+    bg_image_path = Path(__file__).parent.parent / "Backgrounds" / "bg2.png"
     bg_img_base64 = get_base64_image(bg_image_path)
     
     bg_css = f"""
@@ -56,7 +56,7 @@ def upload_page():
         st.session_state['logged_in'] = False
 
     # Load the model
-    model_path = Path(__file__).parent / "best.onnx"
+    model_path = Path(__file__).parent.parent / "best.onnx"
     ort_session = ort.InferenceSession(str(model_path))
     
     # Define class names
