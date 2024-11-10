@@ -42,10 +42,10 @@ def set_background(image_path):
     st.markdown(bg_css, unsafe_allow_html=True)
 
 # Set background image
-set_background("Background/Bg4.png")
+set_background("Backgrounds/Bg4.png")
 
 # Display large logo at the top
-logo = Image.open("Background/1.png")
+logo = Image.open("Backgrounds/1.png")
 st.image(logo, use_column_width=False, width=750)  # Adjust width to make the logo bigger
 
 # Initialize session state for login
