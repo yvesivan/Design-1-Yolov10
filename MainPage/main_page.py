@@ -1,24 +1,60 @@
+from pathlib import Path
 import streamlit as st
-from ImagedGathered import IG
-from Location import Loc
-from Uploads import Upload
+import base64
 
-# Set up the main page with background and buttons
+# Function to get base64 encoding of an image
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        base64_str = base64.b64encode(image_file.read()).decode()
+    return base64_str
+
+# Function to set background image in Streamlit
+def set_background():
+    # Correct path based on 'Backgrounds' folder alignment with 'app.py'
+    bg_image_path = Path(__file__).parent.parent / "Backgrounds" / "bg2.png"
+    bg_img_base64 = get_base64_image(bg_image_path)
+    
+    bg_css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{bg_img_base64}");
+        background-size: cover;
+    }}
+    .title-container {{
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 20px;
+    }}
+    .stButton > button {{
+        background-color: #B46617;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5em 1em;
+        font-size: 1rem;
+    }}
+    .stButton > button:hover {{
+        background-color: #D47F23;
+    }}
+    </style>
+    """
+    st.markdown(bg_css, unsafe_allow_html=True)
+
 def main_page():
-    st.image("Backgrounds/bg2.png", use_column_width=True)
-    
-    st.title("Main Page")
-    
-    # Create buttons for navigation
-    if st.button("Image Gathered"):
-        IG.main_page()  # Navigate to IG.py's main_page
+    set_background()
+    st.markdown('<div class="title-container"><h1>Main Page</h1></div>', unsafe_allow_html=True)
+
+    # Add buttons for navigation
+    if st.button("ImageGathered"):
+        from ImagedGathered import IG
+        IG.ig_page()
     
     if st.button("Location"):
-        Loc.main_page()  # Navigate to Loc.py's main_page
+        from Location import Loc
+        Loc.loc_page()
     
     if st.button("Upload"):
-        Upload.main_page()  # Navigate to Upload.py's main_page
-
-# Entry point for the main page
-if __name__ == "__main__":
-    main_page()
+        from Uploads import Upload
+        Upload.upload_page()
