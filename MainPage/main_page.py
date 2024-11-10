@@ -2,14 +2,55 @@ import streamlit as st
 import onnxruntime as ort
 import numpy as np
 from PIL import Image, ImageDraw
+import base64
+
+# Function to get base64 encoding of an image
+def get_base64_image(image_path):
+    with open(image_path, "rb") as image_file:
+        base64_str = base64.b64encode(image_file.read()).decode()
+    return base64_str
+
+# Function to set background image in Streamlit
+def set_background(image_path):
+    bg_img_base64 = get_base64_image(image_path)
+    bg_css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{bg_img_base64}");
+        background-size: cover;
+    }}
+    .title-container {{
+        padding: 10px 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        display: inline-block;
+        text-align: center;
+        margin-bottom: 20px;
+    }}
+    .stButton > button {{
+        background-color: #B46617;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5em 1em;
+        font-size: 1rem;
+    }}
+    .stButton > button:hover {{
+        background-color: #D47F23;
+    }}
+    </style>
+    """
+    st.markdown(bg_css, unsafe_allow_html=True)
 
 def main_page():
+    # Set the background image for the main page
+    set_background("Backgrounds/bg2.png")
+
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
     
     # Logout button
     if st.button("Logout"):
-        st.session_state['logged_in'] = False  # Reset login state to show login form again
+        st.session_state['logged_in'] = False
 
     # Load the model
     model_path = "best.onnx"
@@ -46,4 +87,3 @@ def main_page():
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
         st.image(resized_image, caption="Model Prediction", use_column_width=True)
-
