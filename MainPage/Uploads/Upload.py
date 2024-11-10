@@ -3,6 +3,7 @@ import onnxruntime as ort
 import numpy as np
 from PIL import Image, ImageDraw
 import base64
+from pathlib import Path
 
 # Function to get base64 encoding of an image
 def get_base64_image(image_path):
@@ -11,8 +12,11 @@ def get_base64_image(image_path):
     return base64_str
 
 # Function to set background image in Streamlit
-def set_background(image_path):
-    bg_img_base64 = get_base64_image(image_path)
+def set_background():
+    # Correct path based on 'Backgrounds' folder alignment with 'app.py'
+    bg_image_path = Path(__file__).parent.parent / "Backgrounds" / "bg2.png"
+    bg_img_base64 = get_base64_image(bg_image_path)
+    
     bg_css = f"""
     <style>
     .stApp {{
@@ -41,12 +45,9 @@ def set_background(image_path):
     """
     st.markdown(bg_css, unsafe_allow_html=True)
 
-# Main function for Upload page
-def main_page():
-    # Set the background image for the main page
-    set_background("Backgrounds/bg2.png")
-
-    # Title and instructions
+def upload_page():
+    set_background()
+    
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
     
@@ -54,9 +55,9 @@ def main_page():
     if st.button("Logout"):
         st.session_state['logged_in'] = False
 
-    # Load the ONNX model
-    model_path = "best.onnx"
-    ort_session = ort.InferenceSession(model_path)
+    # Load the model
+    model_path = Path(__file__).parent / "best.onnx"
+    ort_session = ort.InferenceSession(str(model_path))
     
     # Define class names
     class_names = {
@@ -69,21 +70,17 @@ def main_page():
 
     # Process and display predictions if an image is uploaded
     if uploaded_file is not None:
-        # Load and display the uploaded image
         uploaded_image = Image.open(uploaded_file)
         st.image(uploaded_image, caption="Uploaded Image.", use_column_width=True)
 
-        # Preprocess the image for the model
         resized_image = uploaded_image.resize((640, 640))
         image_input = np.array(resized_image).astype(np.float32) / 255.0
         image_input = np.transpose(image_input, (2, 0, 1))
         image_input = image_input[np.newaxis, :, :, :]
 
-        # Run the model and get detections
         outputs = ort_session.run(None, {ort_session.get_inputs()[0].name: image_input})
         detections = outputs[0]
 
-        # Draw bounding boxes and labels on the image
         draw = ImageDraw.Draw(resized_image)
         for detection in detections[0]:
             x1, y1, x2, y2, confidence, class_id = detection
@@ -92,5 +89,4 @@ def main_page():
                 draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
-        # Display the prediction result
         st.image(resized_image, caption="Model Prediction", use_column_width=True)
