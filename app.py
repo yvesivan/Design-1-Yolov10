@@ -41,19 +41,12 @@ def set_background(image_path):
     """
     st.markdown(bg_css, unsafe_allow_html=True)
 
-# Set background image
-set_background("Backgrounds/Bg4.png")
+# Login Page Function
+def login_page():
+    set_background("Backgrounds/Bg4.png")
+    logo = Image.open("Backgrounds/1.png")
+    st.image(logo, use_column_width=False, width=750)
 
-# Display large logo at the top
-logo = Image.open("Backgrounds/1.png")
-st.image(logo, use_column_width=False, width=750)  # Adjust width to make the logo bigger
-
-# Initialize session state for login
-if 'logged_in' not in st.session_state:
-    st.session_state['logged_in'] = False
-
-# Show login form only if not logged in
-if not st.session_state['logged_in']:
     st.markdown('<div class="title-container"><h1>WELCOME TO PROJECT TRAPMOS</h1></div>', unsafe_allow_html=True)
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
@@ -69,11 +62,11 @@ if not st.session_state['logged_in']:
         else:
             st.error("Incorrect username or password.")
 
-# Show main app content if logged in
-if st.session_state['logged_in']:
+# Main Page Function
+def main_page():
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
-
+    
     # Logout button
     if st.button("Logout"):
         st.session_state['logged_in'] = False  # Reset login state to show login form again
@@ -113,3 +106,12 @@ if st.session_state['logged_in']:
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
         st.image(resized_image, caption="Model Prediction", use_column_width=True)
+
+# Main Application Logic
+if 'logged_in' not in st.session_state:
+    st.session_state['logged_in'] = False
+
+if not st.session_state['logged_in']:
+    login_page()
+else:
+    main_page()
