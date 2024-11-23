@@ -13,8 +13,7 @@ def get_base64_image(image_path):
 
 # Function to set background image in Streamlit
 def set_background():
-    # Correct path based on 'Backgrounds' folder alignment with 'app.py'
-    bg_image_path = Path(__file__).parent.parent / "Backgrounds" / "bg2.png"
+    bg_image_path = Path(__file__).parent.parent.parent / "Backgrounds" / "bg2.png"
     bg_img_base64 = get_base64_image(bg_image_path)
     
     bg_css = f"""
@@ -47,28 +46,17 @@ def set_background():
 
 def upload_page():
     set_background()
-    
     st.markdown('<div class="title-container"><h1>Aedes Mosquito Identifier</h1></div>', unsafe_allow_html=True)
     st.write("Upload an image to make a prediction.")
     
-    # Logout button
     if st.button("Logout"):
         st.session_state['logged_in'] = False
 
-    # Load the model
-    model_path = Path(__file__).parent.parent / "best.onnx"
+    model_path = Path(__file__).parent.parent.parent / "best.onnx"
     ort_session = ort.InferenceSession(str(model_path))
-    
-    # Define class names
-    class_names = {
-        0: "Aedes Albopictus",
-        1: "Aedes Aegypti",
-    }
+    class_names = {0: "Aedes Albopictus", 1: "Aedes Aegypti"}
 
-    # File uploader
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
-
-    # Process and display predictions if an image is uploaded
     if uploaded_file is not None:
         uploaded_image = Image.open(uploaded_file)
         st.image(uploaded_image, caption="Uploaded Image.", use_column_width=True)
