@@ -1,9 +1,8 @@
 from pathlib import Path
 import streamlit as st
-import base64
-from .ImageGathered.IG import ig_page  # Updated import for ImageGathered
-from .Location.Loc import loc_page  # Updated import for Location
-from .Uploads.Upload import upload_page  # Updated import for Uploads
+from .ImageGathered.IG import ig_page  # Relative import for ImageGathered
+from .Location.Loc import loc_page  # Relative import for Location
+from .Uploads.Upload import upload_page  # Relative import for Uploads
 
 # Function to get base64 encoding of an image
 def get_base64_image(image_path):
