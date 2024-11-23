@@ -1,6 +1,9 @@
 from pathlib import Path
 import streamlit as st
 import base64
+from MainPage.Uploads.Upload import upload_page  # Updated import
+from MainPage.ImageGathered.IG import ig_page  # Updated import
+from MainPage.Location.Loc import loc_page  # Updated import
 
 # Function to get base64 encoding of an image
 def get_base64_image(image_path):
@@ -10,7 +13,6 @@ def get_base64_image(image_path):
 
 # Function to set background image in Streamlit
 def set_background():
-    # Correct path based on 'Backgrounds' folder alignment with 'app.py'
     bg_image_path = Path(__file__).parent.parent / "Backgrounds" / "bg2.png"
     bg_img_base64 = get_base64_image(bg_image_path)
     
@@ -46,15 +48,11 @@ def main_page():
     set_background()
     st.markdown('<div class="title-container"><h1>Main Page</h1></div>', unsafe_allow_html=True)
 
-    # Add buttons for navigation
-    if st.button("ImageGathered"):
-        from ImagedGathered import IG
-        IG.ig_page()
-    
-    if st.button("Location"):
-        from Location import Loc
-        Loc.loc_page()
-    
     if st.button("Upload"):
-        from Uploads import Upload
-        Upload.upload_page()
+        upload_page()
+
+    if st.button("ImageGathered"):
+        ig_page()
+
+    if st.button("Location"):
+        loc_page()
