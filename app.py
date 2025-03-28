@@ -101,7 +101,7 @@ if st.session_state['logged_in']:
         draw = ImageDraw.Draw(resized_image)
         for detection in detections[0]:
             x1, y1, x2, y2, confidence, class_id = detection
-            if confidence > 0.2:  # Lowered confidence threshold to 0.2
+            if confidence > 0.52:  # Lowered confidence threshold to 0.2
                 class_name = "Aedes Mosquito"  # Generalized class name
                 draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
