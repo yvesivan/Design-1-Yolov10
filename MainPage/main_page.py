@@ -1,9 +1,8 @@
 from pathlib import Path
 import streamlit as st
-import base64
-from .ImageGathered.IG import ig_page
-from .Location.Loc import loc_page
-from .Uploads.Upload import upload_page
+from .ImageGathered.IG import ig_page  # Relative import for ImageGathered
+from .Location.Loc import loc_page  # Relative import for Location
+from .Uploads.Upload import upload_page  # Relative import for Uploads
 
 # Function to get base64 encoding of an image
 def get_base64_image(image_path):
@@ -56,9 +55,3 @@ def main_page():
 
     if st.button("Location"):
         loc_page()
-
-    # Display Confidence Level
-    st.subheader("Confidence Level")
-    confidence = st.slider("Detection Confidence", 0.0, 1.0, 0.75)  # Default to 0.75
-    st.write(f"Current confidence level: **{confidence:.2f}**")
-
