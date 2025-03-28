@@ -52,7 +52,7 @@ def login_page():
 
     # Define correct credentials
     correct_username = "admin"
-    correct_password = "123"
+    correct_password = "admin"
 
     if st.button("Login"):
         if username == correct_username and password == correct_password:
