@@ -54,7 +54,6 @@ def upload_page():
 
     model_path = Path(__file__).parent.parent.parent / "best.onnx"
     ort_session = ort.InferenceSession(str(model_path))
-    class_names = {0: "Aedes Albopictus", 1: "Aedes Aegypti"}
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
     if uploaded_file is not None:
@@ -72,9 +71,12 @@ def upload_page():
         draw = ImageDraw.Draw(resized_image)
         for detection in detections[0]:
             x1, y1, x2, y2, confidence, class_id = detection
-            if confidence > 0.3:
-                class_name = class_names.get(int(class_id), "Unknown")
+            if confidence > 0.5:  # Updated confidence threshold to 0.5
+                class_name = "Aedes Mosquito"  # General label for all detections
                 draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
         st.image(resized_image, caption="Model Prediction", use_column_width=True)
+
+# Call the upload page function
+upload_page()
