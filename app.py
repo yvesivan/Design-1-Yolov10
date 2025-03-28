@@ -51,8 +51,8 @@ def login_page():
     password = st.text_input("Password", type="password")
 
     # Define correct credentials
-    correct_username = "admin"
-    correct_password = "admin"
+    correct_username = "Admin"
+    correct_password = "Admin"
 
     if st.button("Login"):
         if username == correct_username and password == correct_password:
