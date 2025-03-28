@@ -1,52 +1,63 @@
 import streamlit as st
 from PIL import Image
 import base64
-from MainPage.main_page import main_page  # Import the main_page function
+import os
+from MainPage.main_page import main_page  # Import your main page logic
 
 # Function to get base64 encoding of an image
 def get_base64_image(image_path):
-    with open(image_path, "rb") as image_file:
-        base64_str = base64.b64encode(image_file.read()).decode()
-    return base64_str
+    try:
+        with open(image_path, "rb") as image_file:
+            base64_str = base64.b64encode(image_file.read()).decode()
+        return base64_str
+    except FileNotFoundError:
+        st.error(f"Image file not found: {image_path}")
+        return ""
 
 # Function to set background image in Streamlit
 def set_background(image_path):
     bg_img_base64 = get_base64_image(image_path)
-    bg_css = f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{bg_img_base64}");
-        background-size: cover;
-    }}
-    .title-container {{
-        padding: 10px 20px;
-        background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
-        display: inline-block;
-        text-align: center;
-        margin-bottom: 20px;
-    }}
-    .stButton > button {{
-        background-color: #B46617;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 0.5em 1em;
-        font-size: 1rem;
-    }}
-    .stButton > button:hover {{
-        background-color: #D47F23;
-    }}
-    </style>
-    """
-    st.markdown(bg_css, unsafe_allow_html=True)
+    if bg_img_base64:
+        bg_css = f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/png;base64,{bg_img_base64}");
+            background-size: cover;
+        }}
+        .title-container {{
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: inline-block;
+            text-align: center;
+            margin-bottom: 20px;
+        }}
+        .stButton > button {{
+            background-color: #B46617;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.5em 1em;
+            font-size: 1rem;
+        }}
+        .stButton > button:hover {{
+            background-color: #D47F23;
+        }}
+        </style>
+        """
+        st.markdown(bg_css, unsafe_allow_html=True)
 
 # Login Page Function
 def login_page():
     set_background("Backgrounds/Bg4.png")
-    logo = Image.open("Backgrounds/1.png")
-    st.image(logo, use_column_width=False, width=750)
+
+    try:
+        logo = Image.open("Backgrounds/1.png")
+        st.image(logo, use_column_width=False, width=750)
+    except FileNotFoundError:
+        st.error("Logo image not found at 'Backgrounds/1.png'.")
 
     st.markdown('<div class="title-container"><h1>WELCOME TO PROJECT TRAPMOS</h1></div>', unsafe_allow_html=True)
+    
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
@@ -61,7 +72,7 @@ def login_page():
         else:
             st.error("Incorrect username or password.")
 
-# Main Application Logic
+# Main Logic
 if 'logged_in' not in st.session_state:
     st.session_state['logged_in'] = False
 
