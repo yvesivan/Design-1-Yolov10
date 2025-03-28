@@ -52,7 +52,7 @@ def login_page():
 
     try:
         logo = Image.open("Backgrounds/1.png")
-        st.image(logo, use_column_width=False, width=750)
+        st.image(logo, use_container_width=True, width=750)
     except FileNotFoundError:
         st.error("Logo image not found at 'Backgrounds/1.png'.")
 
