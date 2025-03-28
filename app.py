@@ -60,7 +60,7 @@ if not st.session_state['logged_in']:
 
     # Define correct credentials
     correct_username = "admin"
-    correct_password = "admin"
+    correct_password = "123"
 
     if st.button("Login"):
         if username == correct_username and password == correct_password:
