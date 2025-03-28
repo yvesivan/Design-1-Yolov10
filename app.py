@@ -46,7 +46,7 @@ set_background("Bg4.png")
 
 # Display large logo at the top
 logo = Image.open("1.png")
-st.image(logo, use_column_width=False, width=750)  # Adjust width to make the logo bigger
+st.image(logo, use_column_width=False, width=750)
 
 # Initialize session state for login
 if 'logged_in' not in st.session_state:
@@ -60,7 +60,7 @@ if not st.session_state['logged_in']:
 
     # Define correct credentials
     correct_username = "admin"
-    correct_password = "admin"
+    correct_password = "123"
 
     if st.button("Login"):
         if username == correct_username and password == correct_password:
@@ -82,12 +82,6 @@ if st.session_state['logged_in']:
     model_path = "best.onnx"
     ort_session = ort.InferenceSession(model_path)
     
-    # Define class names
-    class_names = {
-        0: "Aedes Albopictus",
-        1: "Aedes Aegypti",
-    }
-
     # File uploader
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "jfif"])
 
@@ -107,8 +101,8 @@ if st.session_state['logged_in']:
         draw = ImageDraw.Draw(resized_image)
         for detection in detections[0]:
             x1, y1, x2, y2, confidence, class_id = detection
-            if confidence > 0.3:
-                class_name = class_names.get(int(class_id), "Unknown")
+            if confidence > 0.2:  # Lowered confidence threshold to 0.2
+                class_name = "Aedes Mosquito"  # Generalized class name
                 draw.rectangle([x1, y1, x2, y2], outline="green", width=2)
                 draw.text((x1, y1 - 10), f"{class_name}, Conf: {confidence:.2f}", fill="red")
 
